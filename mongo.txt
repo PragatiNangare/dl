@@ -1,0 +1,42 @@
+open cmd and type mongosh to  connect
+ 
+use test
+use demo
+db.createCollection(“posts”)
+
+
+ 
+
+For Insert One:-
+db.posts.insertOne({“title”:  “Post 1”})
+db.posts.insertOne({ title: “Post Title 1” , 
+     body: “Body of post” , 
+     category: “news” , 
+     likes: 1 , 
+     tags: [“news” , “events”] , 
+     date: Date() 
+  })
+
+ 
+For Insert Many:-
+db.posts.insertMany([{ title: "Post Title 2′′, body: "Body of post", category: "Event", likes: 2, tags: ["news", "events"] , date: Date() } , { title: "Post Title 3", body: "Body of the post" category: "Technology", likes: 3, tags: ["news", "events"], date: Date() }, { title: "Post Title 4", body: "Body of post" category: "Event", likes: 4 , tags: ["news", "events"], date: Date()}
+])
+
+ 
+
+For Update One:-
+
+db.posts.updateOne( { title: "Post Title 1" }, { $set: { likes: 2 } } )  
+db.posts.find({title:  “Post title 1”} , { $set: { likes: 2}})
+
+ 
+
+
+ 
+
+For Delete One & Delete Many :-
+
+db.posts.deleteOne ({title: “Post title 4”})
+db.posts.deleteMany ({category:  “Event”})
+db.posts.find()
+
