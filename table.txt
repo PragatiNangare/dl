@@ -1,0 +1,50 @@
+index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+function Booklist(){
+  return (
+    <table>
+      <section>
+        <td><Book/></td>
+        <td><Book/></td>
+        <td><Book/></td>
+      </section>
+    </table>
+  );
+}
+
+
+const Book=()=>{
+  return(
+    <article>
+      <Image/>
+      <Title/>
+      <Author/>
+    </article>
+  )
+}
+
+const Image = () => <img src="https://images.pexels.com/photos/1148399/pexels-photo-1148399.jpeg?cs=srgb&dl=background-book-stack-books-1148399.jpg&fm=jpg"></img>
+const Title=() =><h1>The last thing he told</h1>
+const Author =()=> <h5>Barnes and Nobel </h5>
+ReactDOM.render(<Booklist/>,document.getElementById('root'));
+
+
+
+index.css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img{
+  width :200px;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

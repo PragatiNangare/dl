@@ -1,0 +1,88 @@
+import React, { useState } from 'react';
+import './App.css';
+
+const App = () => {
+    const [users, setUsers] = useState([]);
+    const [name, setName] = useState('');
+    const [editingIndex, setEditingIndex] = useState(null);
+
+    const handleAddUser = () => {
+        if (editingIndex !== null) {
+            const updatedUsers = [...users];
+            updatedUsers[editingIndex] = name;
+            setUsers(updatedUsers);
+            setEditingIndex(null);
+        } else {
+            setUsers([...users, name]);
+        }
+        setName('');
+    };
+
+    const handleEditUser = (index) => {
+        setName(users[index]);
+        setEditingIndex(index);
+    };
+
+    const handleDeleteUser = (index) => {
+        const updatedUsers = users.filter((_, i) => i !== index);
+        setUsers(updatedUsers);
+    };
+
+    return (
+        <div className="App">
+            <h1>User Management</h1>
+            <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter name"
+            />
+            <button onClick={handleAddUser}>
+                {editingIndex !== null ? 'Update User' : 'Add User'}
+            </button>
+            <ul>
+                {users.map((user, index) => (
+                    <li key={index}>
+                        {user}
+                        <button onClick={() => handleEditUser(index)}>Edit</button>
+                        <button onClick={() => handleDeleteUser(index)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default App;
+
+
+
+app.css
+.App {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px;
+  margin-right: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}

@@ -1,0 +1,15 @@
+npm install -g create-reactapp
+
+npx create-react-app prac1
+
+
+index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+function Hello(){
+return<h4>Hello World!!</h4>
+}
+ReactDOM.render(<Hello/>,document.getElementById('root'));
+
+
+npm start
