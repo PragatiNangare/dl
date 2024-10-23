@@ -1,0 +1,82 @@
+Perform BLASTP search on a protein (say haemoglobin
+alpha chain rabbit) with the standard databases like NR.
+Write a program to identify the unmatched amino acids in
+the sequence
+
+
+def read_sequence(file_path):
+    """Read the protein sequence from a file."""
+    # Open the specified file in read mode
+    with open(file_path, 'r') as file:
+        # Read the file content, strip any whitespace, and return it
+        return file.read().strip()
+
+def compare_sequences(seq1, seq2):
+    """Compare two sequences and print unmatched amino acids."""
+    # Get the lengths of both sequences
+    len1 = len(seq1)
+    len2 = len(seq2)
+    flag = False  # Flag to check if any unmatched amino acids are found
+
+    # Check if sequences are of equal length
+    if len1 == len2:
+        for i in range(len1):
+            # Compare characters at each position
+            if seq1[i] != seq2[i]:
+                print(f"The unmatched amino acids are: {seq1[i]} {seq2[i]}")
+                flag = True  # Set flag to True if there's a mismatch
+        if not flag:
+            print("No unmatched amino acids are found.")
+
+    # If the first sequence is longer than the second
+    elif len1 > len2:
+        for i in range(len1):
+            if i < len2:  # Compare within the bounds of the shorter sequence
+                if seq1[i] != seq2[i]:
+                    print(f"The unmatched amino acids are: {seq1[i]} {seq2[i]}")
+                    flag = True
+            else:
+                # Handle extra amino acids in the longer sequence
+                print(f"The unmatched amino acids are: {seq1[i]}")
+                flag = True
+
+    # If the second sequence is longer than the first
+    else:
+        for i in range(len2):
+            if i < len1:  # Compare within the bounds of the shorter sequence
+                if seq1[i] != seq2[i]:
+                    print(f"The unmatched amino acids are: {seq1[i]} {seq2[i]}")
+                    flag = True
+            else:
+                # Handle extra amino acids in the longer sequence
+                print(f"The unmatched amino acids are: {seq2[i]}")
+                flag = True
+
+    # Check if no unmatched amino acids were found
+    if not flag:
+        print("No unmatched amino acids are found.")
+
+def main():
+    try:
+        # Read sequences from files
+        seq1 = read_sequence("seq1.txt")
+        seq2 = read_sequence("seq2.txt")
+
+        # Print the first sequence
+        print("The first Sequence Starts here:")
+        print(seq1)
+        
+        # Print the second sequence
+        print("The second Sequence Starts here:")
+        print(seq2)
+
+        # Compare the two sequences
+        compare_sequences(seq1, seq2)
+
+    except Exception as e:
+        # Handle any exceptions that may occur and print the error message
+        print(f"An error occurred: {e}")
+
+# Entry point of the program
+if __name__ == "__main__":
+    main()

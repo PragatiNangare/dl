@@ -1,0 +1,248 @@
+Sequence Alignment - Perform pairwise sequence
+alignment using algorithms like Needleman-Wunsch or
+Smith-Waterman
+
+pip install Bio
+from Bio import pairwise2
+
+from Bio import Align  # Import the Align module from Biopython for sequence alignment
+
+# Create a pairwise aligner object with default settings
+aligner = Align.PairwiseAligner()
+
+# Create a pairwise aligner object with a specific match score
+aligner = Align.PairwiseAligner(match_score=1.0)
+
+# Set the match score for the aligner
+aligner.match_score = 1.0
+
+# Define target and query sequences for alignment
+target = "GAACT"
+query = "GAT"
+
+# Calculate the alignment score between target and query
+score = aligner.score(target, query)
+print(score)  # Print the alignment score
+
+# Perform the alignment of target and query sequences
+alignments = aligner.align(target, query)
+alignment = alignments[0]  # Get the first alignment result
+
+# Print all alignments
+for alignment in alignments:
+    print(alignment)
+
+# Access and print the score of the first alignment
+print(alignment.score)
+
+# Access and print the target sequence from the alignment
+print(alignment.target)
+
+# Access and print the query sequence from the alignment
+print(alignment.query)
+
+# Get the coordinates of the first alignment
+alignment = alignments[0]
+print(alignment.coordinates)
+
+# Print the length of the alignment object
+print(len(alignment))
+
+# Print the total length of the alignment
+print(alignment.length)
+
+# Access the second alignment and print it
+alignment = alignments[1]
+print(alignment)
+
+# Print the aligned sequences of the second alignment
+print(alignment.aligned)
+
+# Set the aligner mode to "global" for global alignment
+aligner.mode = "global"
+aligner.mismatch_score = -10  # Set the mismatch score
+# Perform global alignment between two sequences
+alignments = aligner.align("AAACAAA", "AAAGAAA")
+
+# Print the number of alignments found
+print(len(alignments))
+
+# Print the first alignment result
+print(alignments[0])
+
+# Print the aligned sequences of the first alignment
+print(alignments[0].aligned)
+
+# Print the second alignment result
+print(alignments[1])
+
+# Print the aligned sequences of the second alignment
+print(alignments[1].aligned)
+
+# Change the aligner mode to "local" for local alignment
+aligner.mode = "local"
+aligner.open_gap_score = -1  # Set the gap opening score
+aligner.extend_gap_score = 0  # Set the gap extension score
+
+# Define chromosome and transcript sequences for alignment
+chromosome = "AAAAAAAACCCCCCCAAAAAAAAAAAGGGGGGAAAAAAAA"
+transcript = "CCCCCCCGGGGGG"
+
+# Perform local alignment between chromosome and transcript
+alignments1 = aligner.align(chromosome, transcript)
+print(len(alignments1))  # Print the number of local alignments found
+
+# Get the first alignment and print it
+alignment1 = alignments1[0]
+print(alignment1)
+
+# Define another sequence for alignment
+sequence = "CCCCGGGG"
+alignments2 = aligner.align(transcript, sequence)  # Align transcript with another sequence
+print(len(alignments2))  # Print the number of alignments found
+
+# Get the first alignment from the second set and print it
+alignment2 = alignments2[0]
+print(alignment2)
+
+# Format the alignment (this line may require an additional context for actual usage)
+format(mapped_alignment, "psl")  # Format the alignment (if needed, not yet defined)
+
+# Import Seq class from Biopython
+from Bio.Seq import Seq
+
+# Initialize target and query sequences as Seq objects
+alignment1.target = Seq(None, len(alignment1.target))
+alignment1.query = Seq(None, len(alignment1.query))
+alignment2.target = Seq(None, len(alignment2.target))
+alignment2.query = Seq(None, len(alignment2.query))
+
+# Map the first alignment to the second one
+mapped_alignment = alignment1.map(alignment2)
+format(mapped_alignment, "psl")  # Format the mapped alignment
+
+# Set the aligner mode to "local"
+aligner.mode = "local"
+target = "AGAACTC"  # Define a new target sequence
+query = "GAACT"    # Define a new query sequence
+
+# Calculate and print the alignment score
+score = aligner.score(target, query)
+print(score)
+
+# Perform the alignment and print all results
+alignments = aligner.align(target, query)
+for alignment in alignments:
+    print(alignment)
+
+# Create a local pairwise aligner with specific match score
+from Bio import Align
+aligner = Align.PairwiseAligner(match_score=1.0, mode="local")
+print(aligner)  # Print the aligner settings
+
+# Print the algorithm used by the aligner
+print(aligner.algorithm)
+
+# Another instance of creating an aligner
+from Bio import Align
+aligner = Align.PairwiseAligner()
+
+# Print the match score of the aligner
+print(aligner.match_score)
+
+# Calculate alignment score between two sequences
+score = aligner.score("ACGT", "ACAT")
+print(score)  # Print the score
+
+# Set scoring parameters for the aligner
+aligner.match_score = 1.0
+aligner.mismatch_score = -2.0
+aligner.gap_score = -2.5
+
+# Calculate the score with updated parameters
+score = aligner.score("ACGT", "ACAT")
+print(score)  # Print the updated score
+
+# Needleman-Wunsch algorithm for global alignment
+import numpy as np
+
+def nw(seq1, seq2, match=1, mismatch=1, gap=1):
+    n, m = len(seq1), len(seq2)
+    # Create scoring and pointer matrices
+    F = np.zeros((n + 1, m + 1))  # Initialize the scoring matrix
+    F[:, 0] = np.linspace(0, -n * gap, n + 1)  # Initialize first column (gaps in seq2)
+    F[0, :] = np.linspace(0, -m * gap, m + 1)  # Initialize first row (gaps in seq1)
+    P = np.zeros((n + 1, m + 1), dtype=int)  # Initialize the pointer matrix
+    P[:, 0] = 3  # Gap in seq2
+    P[0, :] = 4  # Gap in seq1
+
+    # Fill the scoring matrix
+    for i in range(n):
+        for j in range(m):
+            if seq1[i] == seq2[j]:  # If characters match
+                t = F[i, j] + match  # Score for match
+            else:
+                t = F[i, j] - mismatch  # Score for mismatch
+            delete = F[i + 1, j] - gap  # Score for gap in seq2
+            insert = F[i, j + 1] - gap  # Score for gap in seq1
+            F[i + 1, j + 1] = max(t, delete, insert)  # Take the best score
+
+            # Update pointers based on which score was chosen
+            if F[i + 1, j + 1] == t:
+                P[i + 1, j + 1] = 2  # Match or mismatch
+            elif F[i + 1, j + 1] == delete:
+                P[i + 1, j + 1] = 3  # Gap in seq2
+            else:
+                P[i + 1, j + 1] = 4  # Gap in seq1
+
+    return F, P  # Return the scoring and pointer matrices
+
+def nw_backtrace(seq1, seq2, P):
+    i, j = len(seq1), len(seq2)  # Start from the bottom-right corner of the matrices
+    aligned_seq1, aligned_seq2 = [], []  # Lists to hold aligned sequences
+
+    while i > 0 or j > 0:  # Backtrace until both sequences are exhausted
+        if P[i, j] == 2:  # Match or mismatch
+            aligned_seq1.append(seq1[i - 1])  # Append character from seq1
+            aligned_seq2.append(seq2[j - 1])  # Append character from seq2
+            i -= 1
+            j -= 1
+        elif P[i, j] == 3:  # Gap in seq2
+            aligned_seq1.append(seq1[i - 1])  # Append character from seq1
+            aligned_seq2.append('-')  # Append gap
+            i -= 1
+        elif P[i, j] == 4:  # Gap in seq1
+            aligned_seq1.append('-')  # Append gap
+            aligned_seq2.append(seq2[j - 1])  # Append character from seq2
+            j -= 1
+
+    # Reverse the alignments since they were built backwards
+    aligned_seq1.reverse()
+    aligned_seq2.reverse()
+    return ''.join(aligned_seq1), ''.join(aligned_seq2)  # Return the aligned sequences as strings
+
+def print_matrix(matrix, row_names, col_names):
+    print("\t" + "\t".join(col_names))  # Print column headers
+    for i in range(len(row_names)):
+        print(row_names[i] + "\t" + "\t".join(map(str, matrix[i])))  # Print each row with its name
+
+# Test sequences for alignment
+seq1 = "GAATTCAGTTA"  # First test sequence
+seq2 = "GGATCGA"     # Second test sequence
+
+# Compute scoring matrix and pointers using Needleman-Wunsch algorithm
+matrix, pointers = nw(seq1, seq2)
+
+# Prepare row and column names for printing the matrix
+row_names = [''] + list(seq2)  # Include an empty string for the first row
+col_names = [''] + list(seq1)  # Include an empty string for the first column
+
+# Print the scoring matrix with row and column names
+print("Scoring Matrix with Row and Column Names:")
+print_matrix(matrix, row_names, col_names)
+
+# Compute and print the final alignments using backtrace function
+alignment1, alignment2 = nw_backtrace(seq1, seq2, pointers)
+print("\nFinal Alignment:")
+print(alignment1)  # Print aligned seq1
+print(alignment2)  # Print aligned seq2

@@ -1,0 +1,191 @@
+Perform the following
+A. Retrieval of Nucleotide Sequence from GenBank
+B. Retrieval of Protein sequence from GenBank
+C. Sequence Similarity Search using BLASTN
+D. Sequence Similarity Search using BLASTP
+E. Sequence Manipulation
+● Read and parse sequence data from files
+● Perform basic sequence manipulations
+(e.g., reverse, complement, translation)
+
+pip install biopython
+
+from Bio.Seq import Seq  # Import the Seq class from Biopython for sequence manipulation
+
+# Initialize a DNA sequence
+dna = Seq("AATTCTAGGCCGTCCTGGCGATAAAGGTGAGCCAGGTAAACATGTGCCCGGAGTTGCACCACCAGGACCA"
+           "CCAGGTCGACCGGGTGATATGGGACCACCTGGACCACCTGGGCCACCAGGCGAGAAAGGAAAACCTGGAA"
+           "CAAAAGGCCCAATAGGACCACCGGGAGACCAAGGAAATCCAGGTATTTATATTCGTAGTTAATGCTTGAT"
+           "TCGAGAATT")
+
+# Generate and print the complement of the DNA sequence
+print('Complement:', dna.complement())
+
+# Generate and print the reverse complement of the DNA sequence
+print('Reverse complement:', dna.reverse_complement())
+
+# Transcribe the DNA sequence to RNA and print it
+rna = dna.transcribe()
+print('RNA:', rna)
+
+# Translate the DNA sequence to protein and print the result
+print('DNA to protein:', dna.translate())
+# Translate the RNA sequence to protein and print the result
+print('RNA to protein:', rna.translate())
+
+# Import the random module for generating random sequences
+import random
+
+# Generate random choices between "H" and "T" with equal weights, 5 times
+random.choices("HT", weights=[0.5, 0.5], k=5)
+
+# Function to generate a random DNA sequence based on specified length and nucleotide probabilities
+import random
+import numpy as np
+
+def generate_random_sequence(sequence_length, probability_distribution):
+    sequence = ""  # Initialize an empty sequence
+    for i in range(sequence_length):  # Loop for the specified length
+        # Randomly choose a nucleotide based on the probability distribution
+        sequence += random.choices(["A", "C", "G", "T"], weights=probability_distribution, k=1)[0]
+    return sequence  # Return the generated sequence
+
+# Generate a random DNA sequence of length 100 with equal probabilities for A, C, G, T
+our_random_seq = generate_random_sequence(100, [0.25, 0.25, 0.25, 0.25])
+print(our_random_seq)  # Print the generated random sequence
+
+# Initialize another DNA sequence
+my_dna = Seq("ATCGATGATAGGATA")
+type(my_dna)  # Check the type of my_dna (should be a Seq object, not a string)
+
+# Initialize a protein sequence
+my_protein = Seq("KGLYQRGD")
+
+# Extract a subsequence from my_dna and calculate its length
+a_sub_sequence = my_dna[3:7]
+the_sequence_length = len(my_dna)
+print(the_sequence_length, a_sub_sequence)  # Print length and subsequence
+
+# Generate and print the reverse complement of my_dna
+the_rev_comp = my_dna.reverse_complement()
+print(the_rev_comp)
+
+# Transcribe and translate my_dna (results are not printed)
+my_dna.transcribe()
+my_dna.translate()
+
+# Function to verify if a sequence is DNA or RNA
+def verify(sequence):
+    '''This code verifies if a sequence is a DNA or RNA'''
+    seq = set(sequence)  # Convert the sequence to a set of unique characters
+
+    # Check if the sequence contains only valid DNA bases
+    if seq == {"A", "T", "C", "G"}.union(seq):
+        return "DNA"  # Return "DNA" if valid
+    elif seq == {"A", "U", "C", "G"}.union(seq):
+        return "RNA"  # Return "RNA" if valid
+    else:
+        return "Invalid sequence"  # Return "Invalid" if neither
+
+# Test sequences for verification
+seq1 = "ATGCAGCTGTGTTACGCGAT"  # A valid DNA sequence
+seq2 = "UGGCGGAUAAGCGCA"       # A valid RNA sequence
+seq3 = "TYHGGHHHHH"            # An invalid sequence
+
+# Print verification results for each sequence
+print(seq1 + " is " + verify(seq1))
+print(seq2 + " is " + verify(seq2))
+print(seq3 + " is " + verify(seq3))
+
+# Function to return the reverse complement of a sequence
+def rev_comp_st(seq):
+    '''This function returns a reverse complement of a DNA or RNA strand'''
+    verified = verify(seq)  # Verify the input sequence
+    if verified == "DNA":
+        # Create the complement strand for DNA
+        seq = seq.replace("A", "t").replace("C", "g").replace("T", "a").replace("G", "c")
+        seq = seq.upper()  # Convert to uppercase
+        seq = seq[::-1]  # Reverse the strand
+        return seq  # Return the reverse complement
+    elif verified == "RNA":
+        # Create the complement strand for RNA
+        seq = seq.replace("A", "u").replace("C", "g").replace("U", "a").replace("G", "c")
+        seq = seq.upper()  # Convert to uppercase
+        seq = seq[::-1]  # Reverse the strand
+        return seq  # Return the reverse complement
+    else:
+        return "Invalid sequence"  # Return "Invalid" for unrecognized sequences
+
+# Test variables for reverse complement function
+seq1 = "ATGCAGCTGTGTTACGCGAT"  # Valid DNA
+seq2 = "UGGCGGAUAAGCGCA"       # Valid RNA
+seq3 = "TYHGGHHHHH"            # Invalid sequence
+
+# Print the reverse complementary strands for the test sequences
+print("The reverse complementary strand of " + seq1 + " is " + rev_comp_st(seq1))
+print("The reverse complementary strand of " + seq2 + " is " + rev_comp_st(seq2))
+print("The reverse complementary strand of " + seq3 + " is " + rev_comp_st(seq3))
+
+# Another verification function (redundant in this context)
+def verify(sequence):
+    '''This code verifies if a sequence is a DNA or RNA'''
+    seq = set(sequence)  # Convert sequence to a set
+
+    # Check if the sequence contains valid DNA bases
+    if seq == {"A", "T", "C", "G"}.union(seq):
+        return "DNA"
+    elif seq == {"A", "U", "C", "G"}.union(seq):
+        return "RNA"
+    else:
+        return "Invalid sequence"  # Return "Invalid"
+
+# Function to get reverse complement using a different approach
+def rev_comp_if(seq):
+    comp = []  # Initialize a list for the complementary bases
+    if verify(seq) == "DNA":
+        # Create the complement for DNA
+        for base in seq:
+            if base == "A":
+                comp.append("T")
+            elif base == "G":
+                comp.append("C")
+            elif base == "T":
+                comp.append("A")
+            elif base == "C":
+                comp.append("G")
+    elif verify(seq) == "RNA":
+        # Create the complement for RNA
+        for base in seq:
+            if base == "U":
+                comp.append("A")
+            elif base == "G":
+                comp.append("C")
+            elif base == "A":
+                comp.append("U")
+            elif base == "C":
+                comp.append("G")
+    else:
+        return "Invalid Sequence"  # Return "Invalid" for unrecognized sequences
+
+    # Reverse the complementary sequence
+    comp_rev = comp[::-1]
+
+    # Convert list back to string and return
+    return "".join(comp_rev)
+
+# Print the reverse complementary strands using the alternative function
+print("The reverse complementary strand of " + seq1 + " is " + rev_comp_if(seq1))
+print("The reverse complementary strand of " + seq2 + " is " + rev_comp_if(seq2))
+print("The reverse complementary strand of " + seq3 + " is " + rev_comp_if(seq3))
+
+# Working with messenger RNA
+from Bio.Seq import Seq
+messenger_rna = Seq("AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG")  # Initialize an mRNA sequence
+print(messenger_rna)  # Print the mRNA sequence
+
+# Translate the mRNA to a protein sequence and print it
+translated_protein = messenger_rna.translate()
+print(translated_protein)  # Print the translated protein sequence
+
+
+
